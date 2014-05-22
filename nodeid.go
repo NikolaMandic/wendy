@@ -1,6 +1,7 @@
 package wendy
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
@@ -25,6 +26,18 @@ func NodeIDFromBytes(source []byte) (NodeID, error) {
 	result[0] = binary.BigEndian.Uint64(source)
 	result[1] = binary.BigEndian.Uint64(source[8:])
 	return result, nil
+}
+
+// NodeIDToBytes encodes a NodeID back to an array of bytes
+func NodeIDToBytes(node NodeID) (b []byte, err error) {
+	buf := new(bytes.Buffer)
+	err = binary.Write(buf, binary.LittleEndian, node[0])
+	if err != nil {
+		return
+	}
+	err = binary.Write(buf, binary.LittleEndian, node[1])
+	b = buf.Bytes()
+	return
 }
 
 // String returns the hexadecimal string encoding of the NodeID.

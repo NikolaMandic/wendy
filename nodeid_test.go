@@ -29,6 +29,13 @@ func TestNodeIDString(t *testing.T) {
 		if str != test.str {
 			t.Errorf("test %v: expected %q, got %q", i, test.str, str)
 		}
+		b, err := NodeIDToBytes(id)
+		if err != nil {
+			t.Errorf("test %v: error %v", i, err)
+		}
+		if bytes.Compare(b, test.bytes) != 0 {
+			t.Errorf("test %v: expected %x, got %x", i, test.bytes, b)
+		}
 	}
 }
 
