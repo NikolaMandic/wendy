@@ -384,6 +384,27 @@ func (c *Cluster) Join(ip string, port int) error {
 	return c.SendToIP(msg, address)
 }
 
+// RoutingTable returns routing table nodes as it is stored
+func (c *Cluster) RoutingTable() [32][16]*Node {
+	c.table.lock.RLock()
+	defer c.table.lock.RUnlock()
+	return c.table.nodes
+}
+
+// RoutingTableNodes returns a list of nodes in the routing table
+func (c *Cluster) RoutingTableNodes() []*Node {
+	table := c.RoutingTable()
+	nodes := make([]*Node, 0)
+	for i := range table {
+		for j := range table[i] {
+			if table[i][j] != nil {
+				nodes = append(nodes, table[i][j])
+			}
+		}
+	}
+	return nodes
+}
+
 func (c *Cluster) fanOutError(err error) {
 	c.debug(err.Error())
 	c.lock.RLock()
