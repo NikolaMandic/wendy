@@ -385,10 +385,15 @@ func (c *Cluster) Join(ip string, port int) error {
 }
 
 // RoutingTable returns routing table nodes as it is stored
-func (c *Cluster) RoutingTable() [32][16]*Node {
+func (c *Cluster) RoutingTable() (r [32][16]*Node) {
 	c.table.lock.RLock()
 	defer c.table.lock.RUnlock()
-	return c.table.nodes
+	for i := range c.table.nodes {
+		for j := range c.table.nodes[i] {
+			r[i][j] = c.table.nodes[i][j]
+		}
+	}
+	return
 }
 
 // RoutingTableNodes returns a list of nodes in the routing table
